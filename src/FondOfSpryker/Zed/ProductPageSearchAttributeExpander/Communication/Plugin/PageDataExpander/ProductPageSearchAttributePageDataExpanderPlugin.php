@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\PageDataExpander;
 
+use FondOfSpryker\Shared\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderSearchConfig;
 use Generated\Shared\Transfer\ProductPageSearchTransfer;
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
 use Spryker\Zed\ProductPageSearch\Dependency\Plugin\ProductPageDataExpanderInterface;
 
+use function array_key_exists;
 use function json_decode;
 
 class ProductPageSearchAttributePageDataExpanderPlugin extends AbstractPlugin implements ProductPageDataExpanderInterface
@@ -20,8 +22,11 @@ class ProductPageSearchAttributePageDataExpanderPlugin extends AbstractPlugin im
      */
     public function expandProductPageData(array $productData, ProductPageSearchTransfer $productAbstractPageSearchTransfer): void
     {
-        $attributes = json_decode($productData['attributes'], true);
+        $abstractProductAttributes = [];
+        if (array_key_exists(ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES, $productData)) {
+            $abstractProductAttributes = json_decode($productData[ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES], true);
+        }
 
-        $productAbstractPageSearchTransfer->setAttributes($attributes);
+        $productAbstractPageSearchTransfer->setAttributes($abstractProductAttributes);
     }
 }

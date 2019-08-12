@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\PageMapExpander;
 
+use FondOfSpryker\Shared\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderSearchConfig;
 use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\PageMapTransfer;
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
@@ -26,7 +27,16 @@ class ProductPageSearchAttributePageMapExpanderPlugin extends AbstractPlugin imp
         array $productData,
         LocaleTransfer $localeTransfer
     ): PageMapTransfer {
-        $pageMapBuilder->addSearchResultData($pageMapTransfer, 'attributes', $productData['attributes']);
+        $abstractProductAttributes = [];
+        if (array_key_exists(ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES, $productData)) {
+            $abstractProductAttributes = $productData[ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES];
+        }
+
+        $pageMapBuilder->addSearchResultData(
+            $pageMapTransfer,
+            ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES,
+            $abstractProductAttributes
+        );
 
         return $pageMapTransfer;
     }
