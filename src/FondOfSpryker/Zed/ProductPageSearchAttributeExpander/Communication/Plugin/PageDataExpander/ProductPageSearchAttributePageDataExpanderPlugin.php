@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\PageDataExpander;
 
@@ -9,24 +9,24 @@ use Generated\Shared\Transfer\ProductPageSearchTransfer;
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
 use Spryker\Zed\ProductPageSearch\Dependency\Plugin\ProductPageDataExpanderInterface;
 
-use function array_key_exists;
-use function json_decode;
-
+/**
+ * @method \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Business\ProductPageSearchAttributeExpanderFacadeInterface getFacade()
+ */
 class ProductPageSearchAttributePageDataExpanderPlugin extends AbstractPlugin implements ProductPageDataExpanderInterface
 {
     /**
-     * @param array $productData
+     * @param array $productPageData
      * @param \Generated\Shared\Transfer\ProductPageSearchTransfer $productAbstractPageSearchTransfer
      *
      * @return void
      */
-    public function expandProductPageData(array $productData, ProductPageSearchTransfer $productAbstractPageSearchTransfer): void
+    public function expandProductPageData(array $productPageData, ProductPageSearchTransfer $productAbstractPageSearchTransfer): void
     {
-        $abstractProductAttributes = [];
-        if (array_key_exists(ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES, $productData)) {
-            $abstractProductAttributes = json_decode($productData[ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES], true);
-        }
+        $productPageData = $this->getFacade()
+            ->expandProductPageData($productPageData, $productAbstractPageSearchTransfer);
 
-        $productAbstractPageSearchTransfer->setAttributes($abstractProductAttributes);
+        $attributes = $productPageData[ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES];
+
+        $productAbstractPageSearchTransfer->setAttributes($attributes);
     }
 }
