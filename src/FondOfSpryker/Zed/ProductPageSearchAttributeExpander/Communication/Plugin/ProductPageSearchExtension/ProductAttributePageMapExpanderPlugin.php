@@ -20,14 +20,14 @@ class ProductAttributePageMapExpanderPlugin extends AbstractPlugin implements Pr
      * @param array $productData
      * @param \Generated\Shared\Transfer\LocaleTransfer $localeTransfer
      *
-     * @return void
+     * @return \Generated\Shared\Transfer\PageMapTransfer
      */
     public function expandProductMap(
         PageMapTransfer $pageMapTransfer,
         PageMapBuilderInterface $pageMapBuilder,
         array $productData,
         LocaleTransfer $localeTransfer
-    ) {
+    ): PageMapTransfer {
         $productDataKey = ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES;
         $abstractProductAttributes = [];
 
@@ -40,5 +40,7 @@ class ProductAttributePageMapExpanderPlugin extends AbstractPlugin implements Pr
             ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES,
             $abstractProductAttributes
         );
+
+        return $pageMapTransfer;
     }
 }

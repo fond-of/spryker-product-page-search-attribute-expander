@@ -19,8 +19,6 @@ class ProductPageSearchAttributeExpanderBusinessFactory extends AbstractBusiness
     }
 
     /**
-     * @throws
-     *
      * @return \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Dependency\Facade\ProductPageSearchAttributeExpanderToProductAttributeFacadeInterface
      */
     protected function getProductAttributeFacade(): ProductPageSearchAttributeExpanderToProductAttributeFacadeInterface
