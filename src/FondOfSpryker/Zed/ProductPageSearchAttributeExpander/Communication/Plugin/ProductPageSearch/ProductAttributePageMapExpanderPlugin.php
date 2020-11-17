@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\PageMapExpander;
+namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\ProductPageSearch;
 
 use FondOfSpryker\Shared\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderSearchConfig;
 use Generated\Shared\Transfer\LocaleTransfer;
@@ -14,7 +14,7 @@ use Spryker\Zed\Search\Business\Model\Elasticsearch\DataMapper\PageMapBuilderInt
 /**
  * @method \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Business\ProductPageSearchAttributeExpanderFacadeInterface getFacade()
  */
-class ProductPageSearchAttributePageMapExpanderPlugin extends AbstractPlugin implements ProductPageMapExpanderInterface
+class ProductAttributePageMapExpanderPlugin extends AbstractPlugin implements ProductPageMapExpanderInterface
 {
     /**
      * @param \Generated\Shared\Transfer\PageMapTransfer $pageMapTransfer

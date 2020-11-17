@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\PageDataExpander;
+namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\ProductPageSearch;
 
 use FondOfSpryker\Shared\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderSearchConfig;
 use Generated\Shared\Transfer\ProductPageSearchTransfer;
@@ -12,7 +12,7 @@ use Spryker\Zed\ProductPageSearch\Dependency\Plugin\ProductPageDataExpanderInter
 /**
  * @method \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Business\ProductPageSearchAttributeExpanderFacadeInterface getFacade()
  */
-class ProductPageSearchAttributePageDataExpanderPlugin extends AbstractPlugin implements ProductPageDataExpanderInterface
+class ProductAttributePageDataExpanderPlugin extends AbstractPlugin implements ProductPageDataExpanderInterface
 {
     /**
      * @param array $productPageData
