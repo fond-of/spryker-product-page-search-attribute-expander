@@ -4,17 +4,13 @@ namespace FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plu
 
 use Codeception\Test\Unit;
 use FondOfSpryker\Shared\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderSearchConfig;
+use FondOfSpryker\Zed\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderConfig;
 use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\PageMapTransfer;
 use Spryker\Zed\Search\Business\Model\Elasticsearch\DataMapper\PageMapBuilderInterface;
 
 class ProductAttributePageMapExpanderPluginTest extends Unit
 {
-    /**
-     * @var \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\ProductPageSearch\ProductAttributePageMapExpanderPlugin
-     */
-    protected $productAttributesMapExpanderPlugin;
-
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\PageMapTransfer
      */
@@ -23,7 +19,7 @@ class ProductAttributePageMapExpanderPluginTest extends Unit
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Zed\Search\Business\Model\Elasticsearch\DataMapper\PageMapBuilderInterface;
      */
-    protected $pageMapBuilderInterfaceMock;
+    protected $pageMapBuilderMock;
 
     /**
      * @var array
@@ -36,6 +32,26 @@ class ProductAttributePageMapExpanderPluginTest extends Unit
     protected $localeTransferMock;
 
     /**
+     * @var \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderConfig|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $configMock;
+
+    /**
+     * @var string[]
+     */
+    protected $sortableIntegerAttributes;
+
+    /**
+     * @var string[]
+     */
+    protected $sortableStringAttributes;
+
+    /**
+     * @var \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Communication\Plugin\ProductPageSearch\ProductAttributePageMapExpanderPlugin
+     */
+    protected $productAttributesMapExpanderPlugin;
+
+    /**
      * @return void
      */
     protected function _before(): void
@@ -46,19 +62,30 @@ class ProductAttributePageMapExpanderPluginTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pageMapBuilderInterfaceMock = $this->getMockBuilder(PageMapBuilderInterface::class)
+        $this->pageMapBuilderMock = $this->getMockBuilder(PageMapBuilderInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->productData = [
-            ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES => [],
+            ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES => [
+                'foo' => 1,
+                'bar' => 'foo',
+            ],
         ];
 
         $this->localeTransferMock = $this->getMockBuilder(LocaleTransfer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->configMock = $this->getMockBuilder(ProductPageSearchAttributeExpanderConfig::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->sortableIntegerAttributes = ['foo'];
+        $this->sortableStringAttributes = ['bar'];
+
         $this->productAttributesMapExpanderPlugin = new ProductAttributePageMapExpanderPlugin();
+        $this->productAttributesMapExpanderPlugin->setConfig($this->configMock);
     }
 
     /**
@@ -66,7 +93,7 @@ class ProductAttributePageMapExpanderPluginTest extends Unit
      */
     public function testExpandProductMap(): void
     {
-        $this->pageMapBuilderInterfaceMock->expects($this->atLeastOnce())
+        $this->pageMapBuilderMock->expects(static::atLeastOnce())
             ->method('addSearchResultData')
             ->with(
                 $this->pageMapTransferMock,
@@ -74,11 +101,35 @@ class ProductAttributePageMapExpanderPluginTest extends Unit
                 $this->productData[ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES]
             )->willReturn($this->productAttributesMapExpanderPlugin);
 
-        $this->assertEquals(
+        $this->configMock->expects(static::atLeastOnce())
+            ->method('getSortableIntegerAttributes')
+            ->willReturn($this->sortableIntegerAttributes);
+
+        $this->configMock->expects(static::atLeastOnce())
+            ->method('getSortableStringAttributes')
+            ->willReturn($this->sortableStringAttributes);
+
+        $this->pageMapBuilderMock->expects(static::atLeastOnce())
+            ->method('addIntegerSort')
+            ->with(
+                $this->pageMapTransferMock,
+                $this->sortableIntegerAttributes[0],
+                $this->productData[ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES][$this->sortableIntegerAttributes[0]]
+            )->willReturn($this->productAttributesMapExpanderPlugin);
+
+        $this->pageMapBuilderMock->expects(static::atLeastOnce())
+            ->method('addStringSort')
+            ->with(
+                $this->pageMapTransferMock,
+                $this->sortableStringAttributes[0],
+                $this->productData[ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES][$this->sortableStringAttributes[0]]
+            )->willReturn($this->productAttributesMapExpanderPlugin);
+
+        static::assertEquals(
             $this->pageMapTransferMock,
             $this->productAttributesMapExpanderPlugin->expandProductPageMap(
                 $this->pageMapTransferMock,
-                $this->pageMapBuilderInterfaceMock,
+                $this->pageMapBuilderMock,
                 $this->productData,
                 $this->localeTransferMock
             )
@@ -88,21 +139,28 @@ class ProductAttributePageMapExpanderPluginTest extends Unit
     /**
      * @return void
      */
-    public function testExpandProductMapNoProductBrand(): void
+    public function testExpandProductMapWithoutAttributes(): void
     {
-        $this->pageMapBuilderInterfaceMock->expects($this->atLeastOnce())
-            ->method('addSearchResultData')
-            ->with(
-                $this->pageMapTransferMock,
-                ProductPageSearchAttributeExpanderSearchConfig::KEY_PRODUCT_DATA_ATTRIBUTES,
-                []
-            )->willReturn($this->productAttributesMapExpanderPlugin);
+        $this->pageMapBuilderMock->expects(static::never())
+            ->method('addSearchResultData');
 
-        $this->assertEquals(
+        $this->configMock->expects(static::never())
+            ->method('getSortableIntegerAttributes');
+
+        $this->configMock->expects(static::never())
+            ->method('getSortableStringAttributes');
+
+        $this->pageMapBuilderMock->expects(static::never())
+            ->method('addIntegerSort');
+
+        $this->pageMapBuilderMock->expects(static::never())
+            ->method('addStringSort');
+
+        static::assertEquals(
             $this->pageMapTransferMock,
             $this->productAttributesMapExpanderPlugin->expandProductPageMap(
                 $this->pageMapTransferMock,
-                $this->pageMapBuilderInterfaceMock,
+                $this->pageMapBuilderMock,
                 [],
                 $this->localeTransferMock
             )
