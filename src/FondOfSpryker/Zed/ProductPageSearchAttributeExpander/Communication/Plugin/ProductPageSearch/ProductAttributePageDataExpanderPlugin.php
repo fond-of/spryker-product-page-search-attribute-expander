@@ -11,6 +11,7 @@ use Spryker\Zed\ProductPageSearch\Dependency\Plugin\ProductPageDataExpanderInter
 
 /**
  * @method \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Business\ProductPageSearchAttributeExpanderFacadeInterface getFacade()
+ * @method \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderConfig getConfig()
  */
 class ProductAttributePageDataExpanderPlugin extends AbstractPlugin implements ProductPageDataExpanderInterface
 {

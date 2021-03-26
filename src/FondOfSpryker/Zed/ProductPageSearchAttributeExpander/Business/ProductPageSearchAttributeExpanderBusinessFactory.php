@@ -8,6 +8,9 @@ use FondOfSpryker\Zed\ProductPageSearchAttributeExpander\Dependency\Facade\Produ
 use FondOfSpryker\Zed\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderDependencyProvider;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 
+/**
+ * @method \FondOfSpryker\Zed\ProductPageSearchAttributeExpander\ProductPageSearchAttributeExpanderConfig getConfig()
+ */
 class ProductPageSearchAttributeExpanderBusinessFactory extends AbstractBusinessFactory
 {
     /**
